@@ -25,43 +25,46 @@ export function CapabilityGrid({
       className="flex w-full min-w-0 max-w-full flex-col gap-4 overflow-visible"
       aria-labelledby={`${grid.id}-title`}
     >
-      <header className="flex w-full min-w-0 max-w-full flex-col items-end gap-1 overflow-hidden text-right">
-        <div className="flex max-w-full min-w-0 items-center gap-3">
-          <div
-            data-grid-header-icon
-            className="flex shrink-0 items-center justify-center rounded-[20px] border border-amalgam-card-border bg-amalgam-canvas"
-          >
-            <CapabilityIcon
-              name="capability"
-              className="icm-header-capability-icon text-amalgam-text-muted"
-            />
-          </div>
-          <div className="flex min-w-0 flex-col items-end">
-            <h2
-              id={`${grid.id}-title`}
-              data-grid-title
-              className="max-w-full font-sans font-medium leading-tight text-white"
+      <header
+        data-side-grid-header
+        className={`icm-side-grid-header icm-side-grid-header--${side}`}
+      >
+        <div className="icm-side-grid-header__row">
+          {isLeft && (
+            <div
+              data-grid-header-icon
+              className="icm-side-grid-header__icon flex shrink-0 items-center justify-center rounded-[20px] border border-amalgam-card-border bg-amalgam-canvas"
             >
+              <CapabilityIcon
+                name="capability"
+                className="icm-header-capability-icon text-amalgam-text-muted"
+              />
+            </div>
+          )}
+          <div className="icm-side-grid-header__copy">
+            <h2 id={`${grid.id}-title`} data-grid-title>
               {grid.title}
             </h2>
-            {grid.channelLabel && (
-              <p
-                data-grid-channel
-                className="font-sans font-medium leading-tight text-white"
-              >
-                {grid.channelLabel}
+            {(grid.channelLabel || grid.subtitle) && (
+              <p data-grid-meta className="icm-side-grid-header__meta">
+                {isLeft
+                  ? [grid.channelLabel, grid.subtitle].filter(Boolean).join(" ")
+                  : [grid.subtitle, grid.channelLabel].filter(Boolean).join(" ")}
               </p>
             )}
           </div>
+          {!isLeft && (
+            <div
+              data-grid-header-icon
+              className="icm-side-grid-header__icon flex shrink-0 items-center justify-center rounded-[20px] border border-amalgam-card-border bg-amalgam-canvas"
+            >
+              <CapabilityIcon
+                name="capability"
+                className="icm-header-capability-icon text-amalgam-text-muted"
+              />
+            </div>
+          )}
         </div>
-        {grid.subtitle && (
-          <p
-            data-grid-subtitle
-            className="font-sans font-normal leading-tight text-amalgam-text-muted"
-          >
-            {grid.subtitle}
-          </p>
-        )}
       </header>
 
       <div data-card-grid className="grid w-full min-w-0 max-w-full">

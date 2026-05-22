@@ -132,8 +132,6 @@ export const defaultModuleConfig: InteractiveCapabilityModuleConfig = {
   labels: {
     solutionsFor: "Solutions for",
     marketConfigFor: "with a market configuration for",
-    regulatoryTitle: "Regulatory Grade",
-    regulatorySubtitle: "Enterprise Capabilities",
   },
   primaryTabs: [
     { id: "caregivers", label: "Caregivers" },

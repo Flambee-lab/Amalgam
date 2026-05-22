@@ -63,12 +63,7 @@ export function InteractiveCapabilityModule({
             side="left"
           />
 
-          <CentralHub
-            hub={config.centralHub}
-            selection={selection}
-            regulatoryTitle={config.labels.regulatoryTitle}
-            regulatorySubtitle={config.labels.regulatorySubtitle}
-          />
+          <CentralHub hub={config.centralHub} selection={selection} />
 
           <CapabilityGrid
             grid={config.rightGrid}

@@ -227,7 +227,9 @@
   min-width: 0;
   display: grid;
   grid-template-columns: minmax(0, 480fr) minmax(0, 837fr) minmax(0, 480fr);
+  grid-template-rows: auto auto;
   column-gap: clamp(0px, 1vw, 16px);
+  row-gap: clamp(12px, 1.1vw, 16px);
   align-items: start;
   overflow: visible;
   isolation: isolate;
@@ -238,31 +240,120 @@
   overflow: visible;
 }
 
+/* Fila 1: headers laterales — fila 2: cards + hub (hub centrado solo vs cards) */
+[data-side-grid] {
+  display: contents;
+}
+
+.icm-side-grid-header--left {
+  grid-column: 1;
+  grid-row: 1;
+  justify-self: start;
+  position: relative;
+  z-index: 20;
+}
+
+[data-side-grid="left"] [data-card-grid] {
+  grid-column: 1;
+  grid-row: 2;
+  justify-self: start;
+  align-self: start;
+  position: relative;
+  z-index: 20;
+}
+
 [data-section="module-main"] > .icm-central-zone {
+  grid-column: 2;
+  grid-row: 2;
   position: relative;
   z-index: 1;
   width: 100%;
   justify-self: center;
-  /* Solo el ecosistema orbital define altura; regulatory es overlay absoluto */
   align-self: center;
 }
 
-/* ─── Side grids ─── */
-[data-side-grid] {
+.icm-side-grid-header--right {
+  grid-column: 3;
+  grid-row: 1;
+  justify-self: end;
   position: relative;
   z-index: 20;
+}
+
+[data-side-grid="right"] [data-card-grid] {
+  grid-column: 3;
+  grid-row: 2;
+  justify-self: end;
+  align-self: start;
+  position: relative;
+  z-index: 20;
+}
+
+/* ─── Side grids (headers + cards) ─── */
+[data-side-grid] [data-card-grid],
+[data-side-grid] .icm-side-grid-header {
   width: 100%;
+  max-width: min(100%, var(--icm-side-grid-max));
   min-width: 0;
-  max-width: 100%;
   overflow: visible;
   container-type: inline-size;
   container-name: icm-side;
 }
 
-[data-side-grid="right"] {
+/* ─── Side grid headers — icono fuera; copy en una sola caja ─── */
+[data-side-grid] .icm-side-grid-header__row,
+[data-side-grid] .icm-side-grid-header__copy {
+  overflow: visible;
+}
+
+.icm-side-grid-header__row {
   display: flex;
+  max-width: 100%;
+  min-width: 0;
+  align-items: flex-start;
+  gap: clamp(10px, 1.1vw, 16px);
+}
+
+.icm-side-grid-header__copy {
+  display: flex;
+  flex: 0 1 auto;
   flex-direction: column;
+  width: max-content;
+  max-width: none;
+  min-width: 0;
+  gap: clamp(2px, 0.35vw, 6px);
+  overflow: visible;
+}
+
+.icm-side-grid-header__copy [data-grid-title],
+.icm-side-grid-header__copy [data-grid-meta] {
+  margin: 0;
+  padding: 0;
+}
+
+.icm-side-grid-header__copy [data-grid-title] {
+  max-width: min(100%, var(--icm-side-grid-max));
+  text-wrap: pretty;
+}
+
+.icm-side-grid-header--left .icm-side-grid-header__row {
+  justify-content: flex-start;
+}
+
+.icm-side-grid-header--left .icm-side-grid-header__copy {
+  align-items: flex-start;
+  text-align: left;
+}
+
+.icm-side-grid-header--right .icm-side-grid-header__row {
+  justify-content: flex-end;
+  width: 100%;
+  margin-left: auto;
+}
+
+.icm-side-grid-header--right .icm-side-grid-header__copy {
   align-items: flex-end;
+  text-align: right;
 }
 
 [data-side-grid] [data-card-grid] {
@@ -396,6 +487,24 @@
   letter-spacing: -0.02em;
 }
 
+[data-module="interactive-capability"]
+  [data-side-grid]
+  [data-capability-card]
+  .icm-capability-card__label--truncate {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  overflow-wrap: normal;
+  word-break: normal;
+  text-wrap: nowrap;
+  line-height: 1.08;
+  letter-spacing: -0.02em;
+}
+
 [data-side-grid] [data-capability-card][data-label-density="dense"] .icm-capability-card__body {
   gap: clamp(2px, 3.5%, 4px);
 }
@@ -411,7 +520,10 @@
   position: relative;
   width: 100%;
   min-width: 0;
-  display: block;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   overflow: visible;
   container-type: inline-size;
   container-name: icm-central;
@@ -741,46 +853,6 @@
   text-wrap: balance;
 }
 
-.icm-regulatory-footer {
-  position: absolute;
-  left: 50%;
-  top: 91%;
-  z-index: 8;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: clamp(6px, 0.5vw, 10px);
-  width: max-content;
-  max-width: min(92cqw, clamp(180px, 36cqw, 480px));
-  margin: 0;
-  padding: 0;
-  pointer-events: none;
-  transform: translate(-50%, -8%);
-  text-align: center;
-  opacity: 0.92;
-}
-
-.icm-regulatory-footer__icon {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: clamp(22px, calc(2.08vw - 4px), 36px);
-  height: clamp(22px, calc(2.08vw - 4px), 36px);
-  border-radius: var(--icm-card-radius);
-  border: 1px solid rgba(37, 193, 181, 0.65);
-  background: rgba(37, 193, 181, 0.35);
-  box-shadow: 0 0 12px rgba(37, 193, 181, 0.22);
-}
-
-.icm-regulatory-footer__text {
-  font-size: clamp(9px, calc(1.39vw - 4px), 22.66px);
-  font-weight: 500;
-  line-height: 1.2;
-  text-wrap: balance;
-  color: rgba(168, 230, 225, 0.88);
-  text-shadow: 0 2px 20px rgba(4, 2, 23, 0.9);
-}
-
 [data-grid-header-icon] {
   width: clamp(48px, 4.17vw, 79.98px);
   height: clamp(48px, 4.17vw, 79.98px);
@@ -792,13 +864,21 @@
   font-weight: 500;
   line-height: 1.15;
   color: #fff;
-  text-wrap: balance;
+  text-wrap: pretty;
 }
 
-[data-grid-channel],
-[data-grid-subtitle] {
+.icm-side-grid-header__meta,
+[data-grid-meta] {
+  display: block;
+  width: max-content;
+  max-width: none;
+  font-family: var(--font-inter), Inter, system-ui, sans-serif;
   font-size: clamp(12px, 1.11vw, 21.33px);
+  font-weight: 400;
   line-height: 1.2;
+  color: #c3cbff;
+  white-space: nowrap;
+  overflow: visible;
 }
 
 .icm-header-capability-icon {
@@ -809,11 +889,34 @@
 @media (max-width: 900px) {
   [data-section="module-main"] {
     grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: none;
     row-gap: clamp(20px, 5vw, 32px);
   }
 
+  [data-side-grid] {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(12px, 3vw, 16px);
+    width: 100%;
+  }
+
+  [data-side-grid="left"] {
+    align-items: flex-start;
+  }
+
   [data-side-grid="right"] {
-    align-items: stretch;
+    align-items: flex-end;
+  }
+
+  .icm-side-grid-header--left,
+  .icm-side-grid-header--right,
+  [data-side-grid="left"] [data-card-grid],
+  [data-side-grid="right"] [data-card-grid],
+  [data-section="module-main"] > .icm-central-zone {
+    grid-column: auto;
+    grid-row: auto;
+    justify-self: stretch;
+    align-self: auto;
   }
 
   [data-side-grid="right"] [data-card-grid] {

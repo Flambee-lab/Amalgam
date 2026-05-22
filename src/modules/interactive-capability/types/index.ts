@@ -64,8 +64,6 @@ export interface ConnectionLineDefinition {
 export interface ModuleLabels {
   solutionsFor: string;
   marketConfigFor: string;
-  regulatoryTitle: string;
-  regulatorySubtitle: string;
 }
 
 export interface InteractiveCapabilityModuleConfig {

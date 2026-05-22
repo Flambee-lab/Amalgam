@@ -1,9 +1,27 @@
-export type LabelDensity = "default" | "compact" | "dense";
+export type LabelDensity = "default" | "compact" | "dense" | "truncate";
 
 const NBSP = "\u00a0";
 
+const TRUNCATE_SINGLE_LINE_LABELS = new Set([
+  "One-Click Enrollment (PSP, Specialty Drugs, DTx)",
+]);
+
+/** Labels que deben mostrarse en una línea con ellipsis */
+export function shouldTruncateCapabilityLabel(label: string): boolean {
+  return TRUNCATE_SINGLE_LINE_LABELS.has(label.trim());
+}
+
+/** Texto en una línea para truncado (mantiene grupos tipográficos) */
+export function formatTruncatedCapabilityLabel(label: string): string {
+  return applyKeepTogether(label.trim());
+}
+
 /** Clasifica labels largos para ajustar tipografía sin truncar */
 export function getLabelDensity(label: string): LabelDensity {
+  if (shouldTruncateCapabilityLabel(label)) {
+    return "truncate";
+  }
+
   const length = label.length;
   const words = label.trim().split(/\s+/).length;
 
