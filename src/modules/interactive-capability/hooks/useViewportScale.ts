@@ -1,7 +1,11 @@
 "use client";
 
 import { useSyncExternalStore } from "react";
-import { ICM_FLUID_MAX, ICM_FLUID_MIN, ICM_REFERENCE_WIDTH } from "../config/fluid-scale";
+import {
+  ICM_FLUID_MAX,
+  ICM_FLUID_MIN,
+  ICM_REFERENCE_WIDTH,
+} from "../config/fluid-scale";
 import { roundCoord } from "../lib/round-coord";
 
 function getScale(): number {
@@ -19,7 +23,7 @@ function subscribe(callback: () => void): () => void {
 }
 
 /**
- * Escala fluida alineada con `--icm-fluid` en CSS (referencia 1920px).
+ * Escala fluida alineada con `--icm-fluid` en CSS (1920 → 1, mín. 0.45).
  * Preferir tokens CSS; este hook queda para integraciones externas.
  */
 export function useViewportScale(): number {

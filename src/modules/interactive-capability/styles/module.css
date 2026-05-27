@@ -1,23 +1,27 @@
 /**
- * Sistema proporcional — referencia 1920px (Figma), no pixel-perfect fijo.
- * Escala: clamp + vw + container queries (cqi).
+ * Sistema proporcional — referencia 1920px (Figma).
+ * Escala continua vía `--icm-fluid` (sincronizada con useViewportScale en runtime).
  */
 [data-module="interactive-capability"] {
   --icm-canvas: #040217;
   --icm-ref-w: 1920;
-  --icm-fluid: clamp(0.68, 100vw / var(--icm-ref-w), 1);
+  --icm-ref-w-narrow: 1440;
+  /* Fallback CSS; el módulo inyecta el valor exacto desde JS */
+  --icm-fluid: clamp(0.45, 100vw / var(--icm-ref-w), 1);
 
-  --icm-pad-x: clamp(20px, 3.125vw, 60px);
-  --icm-card-gap: clamp(6px, 0.556vw, 10.664px);
-  --icm-card-pad: clamp(5px, 0.45vw, 8px);
-  --icm-card-label-size: clamp(11px, 11.75cqi, 15.5px);
-  --icm-orbital-label-size: clamp(10.5px, 11.5cqi, 14.5px);
-  --icm-card-radius: clamp(12px, 1.04vw, 20px);
+  --icm-pad-x: clamp(16px, calc(60px * var(--icm-fluid)), 60px);
+  --icm-card-gap: clamp(6px, calc(10.664px * var(--icm-fluid)), 10.664px);
+  --icm-card-pad: clamp(5px, calc(8px * var(--icm-fluid)), 8px);
+  --icm-card-label-size: clamp(8px, calc(15.5px * var(--icm-fluid)), 15.5px);
+  --icm-orbital-label-size: clamp(8px, calc(14.5px * var(--icm-fluid)), 14.5px);
+  --icm-card-icon-size: clamp(11px, calc(22px * var(--icm-fluid)), 22px);
+  --icm-card-icon-size-compact: clamp(10px, calc(20px * var(--icm-fluid)), 20px);
+  --icm-card-radius: clamp(10px, calc(20px * var(--icm-fluid)), 20px);
   --icm-card-aspect: 149 / 95;
-  --icm-side-grid-max: clamp(220px, 24.4vw, 468.328px);
-  /** Reducción del marco orbital respecto al canvas del hub (~100px) */
-  --icm-orbital-bg-shrink: 100px;
-  --icm-core-logo-size: 48px;
+  --icm-card-grid-min: clamp(88px, calc(149px * var(--icm-fluid)), 149px);
+  --icm-side-grid-max: clamp(200px, calc(468.328px * var(--icm-fluid)), 468.328px);
+  --icm-orbital-glow: calc(40px * var(--icm-fluid));
+  --icm-core-logo-size: clamp(32px, calc(48px * var(--icm-fluid)), 48px);
   /** Filas del grid lateral — escala de this.svg (ramas ↔ filas) */
   --icm-side-rows: 9;
   --icm-side-header-est: clamp(64px, 6.5vw, 108px);
@@ -36,12 +40,14 @@
   );
   /** Ancla ~50% del asset — mínimo desplazaje vs núcleo orbital */
   --icm-branch-align-y: 0px;
-  --icm-branch-shrink: 48px;
+  --icm-branch-shrink: clamp(28px, calc(48px * var(--icm-fluid)), 48px);
 
-  --icm-tab-title-gap: 16px;
-  --icm-tab-chip-gap: 8px;
-  --icm-tab-chip-h: clamp(30px, 2.08vw, 42px);
-  --icm-tab-connector-w: clamp(20px, 1.8vw, 36px);
+  --icm-tab-title-gap: clamp(12px, calc(22px * var(--icm-fluid)), 22px);
+  --icm-tab-chip-gap: clamp(8px, calc(14px * var(--icm-fluid)), 14px);
+  --icm-tab-chip-pad-x: clamp(14px, calc(42px * var(--icm-fluid)), 42px);
+  --icm-tab-chip-radius: clamp(14px, calc(22px * var(--icm-fluid)), 22px);
+  --icm-tab-chip-h: clamp(30px, calc(48px * var(--icm-fluid)), 48px);
+  --icm-tab-connector-w: clamp(24px, calc(80px * var(--icm-fluid)), 80px);
 
   box-sizing: border-box;
   width: 100%;
@@ -80,7 +86,7 @@
   display: flex;
   flex-direction: row;
   flex-wrap: nowrap;
-  align-items: flex-start;
+  align-items: flex-end;
   gap: 0;
   width: max-content;
   max-width: 100%;
@@ -95,6 +101,24 @@
   gap: var(--icm-tab-title-gap);
 }
 
+/* Grid 3× — «for» del título alineado con Patients */
+.icm-tab-control-group--solutions {
+  display: grid;
+  grid-template-columns: repeat(3, max-content);
+  column-gap: var(--icm-tab-chip-gap);
+  align-items: start;
+}
+
+.icm-tab-control-group--config .icm-tab-chip-row {
+  display: grid;
+  grid-template-columns: repeat(3, max-content);
+  column-gap: var(--icm-tab-chip-gap);
+}
+
+.icm-tab-control-group--config {
+  margin-inline-start: clamp(4px, 0.35vw, 8px);
+}
+
 .icm-tab-chip-row {
   position: relative;
   z-index: 2;
@@ -105,6 +129,28 @@
   gap: var(--icm-tab-chip-gap);
   width: auto;
   pointer-events: auto;
+}
+
+.icm-tab-chip-row--grid {
+  display: contents;
+}
+
+.icm-tab-control-group--solutions .icm-tab-section-label {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: repeat(3, max-content);
+  column-gap: var(--icm-tab-chip-gap);
+  width: 100%;
+}
+
+.icm-tab-section-label__lead {
+  grid-column: 1;
+  justify-self: start;
+}
+
+.icm-tab-section-label__anchor {
+  grid-column: 2;
+  justify-self: start;
 }
 
 /* Puente HCPs ↔ Config A — sin aire lateral; ~2× largo anterior */
@@ -126,7 +172,7 @@
   flex-shrink: 0;
   margin: 0;
   white-space: nowrap;
-  font-size: clamp(17px, 1.875vw, 34px);
+  font-size: clamp(14px, calc(34px * var(--icm-fluid, 1)), 34px);
   font-weight: 500;
   line-height: 1.05;
   letter-spacing: -0.02em;
@@ -149,11 +195,12 @@
 [data-tab-chip] {
   flex: 0 0 auto;
   width: auto;
+  min-width: 0;
   max-width: none;
   height: var(--icm-tab-chip-h);
-  padding-inline: clamp(10px, 0.94vw, 18px);
-  border-radius: clamp(10px, 0.83vw, 16px);
-  font-size: clamp(10px, 0.83vw, 15px);
+  padding-inline: var(--icm-tab-chip-pad-x);
+  border-radius: var(--icm-tab-chip-radius);
+  font-size: clamp(9px, calc(15px * var(--icm-fluid, 1)), 15px);
   white-space: nowrap;
   cursor: pointer;
   pointer-events: auto;
@@ -173,21 +220,22 @@
 @media (max-width: 1100px) {
   [data-module="interactive-capability"] {
     --icm-tab-title-gap: clamp(12px, 1.4vw, 16px);
-    --icm-tab-chip-gap: clamp(6px, 0.75vw, 8px);
-    --icm-tab-chip-h: clamp(28px, 2.6vw, 38px);
-    --icm-tab-connector-w: clamp(16px, 1.5vw, 28px);
+    --icm-tab-chip-gap: clamp(8px, 0.75vw, 12px);
+    --icm-tab-chip-pad-x: clamp(34px, calc(24px + 0.9vw), 38px);
+    --icm-tab-chip-h: clamp(32px, 2.6vw, 42px);
+    --icm-tab-connector-w: clamp(32px, 3vw, 56px);
   }
 
   [data-tab-section-label],
   .icm-tab-section-label {
-    font-size: clamp(15px, 1.7vw, 28px);
+    font-size: clamp(13px, calc(28px * var(--icm-fluid, 1)), 28px);
     filter: drop-shadow(0 0 8px rgb(223 125 250 / 24%))
       drop-shadow(0 0 16px rgb(223 125 250 / 11%));
   }
 
   [data-tab-chip] {
-    height: clamp(28px, 2.6vw, 38px);
-    padding-inline: clamp(8px, 0.9vw, 14px);
+    height: clamp(32px, 2.6vw, 42px);
+    padding-inline: var(--icm-tab-chip-pad-x);
     font-size: clamp(9px, 0.95vw, 14px);
   }
 }
@@ -213,8 +261,136 @@
     align-items: center;
   }
 
+  .icm-tab-control-group--solutions {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .icm-tab-control-group--solutions .icm-tab-section-label {
+    display: block;
+  }
+
+  .icm-tab-section-label__lead,
+  .icm-tab-section-label__anchor {
+    display: inline;
+  }
+
+  .icm-tab-chip-row--grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .icm-tab-control-group--config .icm-tab-chip-row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
   .icm-tab-chip-row {
     justify-content: center;
+  }
+}
+
+/* ─── Tablet breakpoint (<1024) — recomposición vertical premium ─── */
+@media (max-width: 1023px) {
+  [data-module="interactive-capability"] {
+    --icm-tab-chip-pad-x: clamp(12px, calc(18px * var(--icm-fluid)), 24px);
+    /* Cards — tamaño uniforme, padding mínimo 12px, tipografía escalada */
+    --icm-card-cell-w: clamp(80px, calc(128px * var(--icm-fluid)), 128px);
+    --icm-card-cell-h: calc(var(--icm-card-cell-w) * 95 / 149);
+    --icm-card-grid-min: var(--icm-card-cell-w);
+  }
+
+  /* Tab bar: una fila — título + chips por grupo, alineado a la izquierda */
+  [data-section="module-tab-bar"].icm-tab-bar {
+    padding-top: clamp(34px, 4.2vw, 56px);
+    padding-bottom: clamp(18px, 3vw, 32px);
+    overflow-x: auto;
+  }
+
+  .icm-tab-bar__inner {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: flex-start;
+    gap: clamp(10px, 1.8vw, 20px);
+    width: 100%;
+    max-width: 100%;
+    margin-inline: 0;
+  }
+
+  .icm-tab-bar__divider {
+    display: block;
+    align-self: center;
+    flex: 0 0 auto;
+    width: clamp(20px, 2.5vw, 40px);
+    height: 1px;
+    margin: 0;
+    margin-bottom: 0;
+  }
+
+  .icm-tab-control-group {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: flex-start;
+    gap: clamp(8px, 1.1vw, 12px);
+    flex: 1 1 auto;
+    min-width: 0;
+    text-align: left;
+    margin-inline-start: 0;
+  }
+
+  .icm-tab-control-group--solutions {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: flex-start;
+  }
+
+  .icm-tab-control-group--solutions .icm-tab-section-label {
+    display: block;
+    flex: 0 0 auto;
+    width: auto;
+    white-space: nowrap;
+  }
+
+  .icm-tab-section-label__lead,
+  .icm-tab-section-label__anchor {
+    display: inline;
+  }
+
+  .icm-tab-chip-row--grid,
+  .icm-tab-control-group--config .icm-tab-chip-row {
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    align-items: center;
+  }
+
+  [data-tab-section-label],
+  .icm-tab-section-label {
+    flex-shrink: 1;
+    min-width: 0;
+  }
+
+  /* Conector this.svg — solo vertical (sin duplicar asset horizontal) */
+  .icm-hub-branch--left .icm-hub-branch__asset {
+    --icm-branch-l: max(
+      0px,
+      calc(var(--icm-branch-left-height) - var(--icm-branch-shrink, 72px))
+    );
+    width: calc(
+      var(--icm-branch-l) * var(--icm-branch-intrinsic-w, 1651) /
+        var(--icm-branch-intrinsic-h, 967)
+    );
+    height: var(--icm-branch-l);
+    max-width: none;
+    transform: translate(-50%, 0) rotate(-90deg);
+    transform-origin: 50% 100%;
   }
 }
 
@@ -310,7 +486,7 @@
   display: flex;
   max-width: 100%;
   min-width: 0;
-  align-items: flex-start;
+  align-items: center;
   gap: clamp(10px, 1.1vw, 16px);
 }
 
@@ -318,11 +494,17 @@
   display: flex;
   flex: 0 1 auto;
   flex-direction: column;
+  justify-content: center;
   width: max-content;
   max-width: none;
   min-width: 0;
   gap: clamp(2px, 0.35vw, 6px);
   overflow: visible;
+}
+
+[data-side-grid] .icm-side-grid-header__icon {
+  align-self: center;
+  flex-shrink: 0;
 }
 
 .icm-side-grid-header__copy [data-grid-title],
@@ -358,17 +540,28 @@
 
 [data-side-grid] [data-card-grid] {
   width: 100%;
-  max-width: min(100%, var(--icm-side-grid-max));
+  max-width: 100%;
   min-width: 0;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(
+    auto-fill,
+    minmax(var(--icm-card-grid-min), 1fr)
+  );
   grid-auto-rows: auto;
   gap: var(--icm-card-gap);
   overflow: visible;
   isolation: auto;
 }
 
-[data-side-grid="right"] [data-card-grid] {
-  margin-left: auto;
+/* Desktop: 3 columnas fijas alineadas al borde lateral */
+@media (min-width: 1024px) {
+  [data-side-grid] [data-card-grid] {
+    max-width: min(100%, var(--icm-side-grid-max));
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  [data-side-grid="right"] [data-card-grid] {
+    margin-left: auto;
+  }
 }
 
 [data-side-grid] [data-capability-card] {
@@ -382,8 +575,8 @@
   height: auto;
   aspect-ratio: var(--icm-card-aspect);
   max-height: none;
-  padding-block: clamp(5px, 5.5%, 7px);
-  padding-inline: clamp(5px, 4%, 7px);
+  padding-block: var(--icm-card-pad);
+  padding-inline: var(--icm-card-pad);
   gap: 0;
   border-radius: var(--icm-card-radius);
   overflow: visible;
@@ -405,8 +598,8 @@
 [data-side-grid] [data-capability-card][data-label-density="compact"] {
   align-items: center;
   justify-content: center;
-  padding-block: clamp(4px, 5%, 6px);
-  padding-inline: clamp(4px, 3.5%, 6px);
+  padding-block: clamp(3px, calc(3px + (100vw - 1440px) * 3 / 480), 6px);
+  padding-inline: clamp(3px, calc(3px + (100vw - 1440px) * 3 / 480), 6px);
 }
 
 [data-side-grid] [data-capability-card][data-label-density="compact"] .icm-capability-card__body {
@@ -416,8 +609,8 @@
 [data-side-grid] [data-capability-card][data-label-density="dense"] {
   align-items: center;
   justify-content: center;
-  padding-block: clamp(3px, 4.5%, 5px);
-  padding-inline: clamp(4px, 3.5%, 6px);
+  padding-block: clamp(3px, calc(3px + (100vw - 1440px) * 2 / 480), 5px);
+  padding-inline: clamp(3px, calc(3px + (100vw - 1440px) * 3 / 480), 6px);
 }
 
 [data-side-grid] [data-capability-card][data-capability-state="highlighted"] {
@@ -425,8 +618,8 @@
 }
 
 [data-side-grid] [data-capability-card] [data-card-icon] {
-  width: clamp(15px, 15cqi, 22px);
-  height: clamp(15px, 15cqi, 22px);
+  width: var(--icm-card-icon-size);
+  height: var(--icm-card-icon-size);
   flex-shrink: 0;
 }
 
@@ -511,8 +704,8 @@
 
 [data-side-grid] [data-capability-card][data-label-density="compact"] .icm-capability-card__icon,
 [data-side-grid] [data-capability-card][data-label-density="dense"] .icm-capability-card__icon {
-  width: clamp(14px, 14cqi, 20px);
-  height: clamp(14px, 14cqi, 20px);
+  width: var(--icm-card-icon-size-compact);
+  height: var(--icm-card-icon-size-compact);
 }
 
 /* ─── Central orbital hub ─── */
@@ -533,7 +726,7 @@
   position: absolute;
   left: 50%;
   top: 50%;
-  z-index: 0;
+  z-index: 1;
   width: 0;
   height: 0;
   overflow: visible;
@@ -542,18 +735,19 @@
 
 .icm-central-hub {
   position: relative;
-  z-index: 1;
+  z-index: 2;
+  --icm-hub-size-scaled: calc(var(--icm-hub-size, 649) * var(--icm-fluid, 1));
+  --icm-hub-bleed-scaled: calc(var(--icm-hub-bleed, 76) * var(--icm-fluid, 1));
   --icm-hub-canvas: calc(
-    (var(--icm-hub-size, 649) + 2 * var(--icm-hub-bleed, 76)) * 1px
+    (var(--icm-hub-size-scaled) + 2 * var(--icm-hub-bleed-scaled)) * 1px
   );
-  width: min(100%, clamp(220px, 92cqw, var(--icm-hub-canvas)));
+  width: min(100%, max(200px, var(--icm-hub-canvas)));
   aspect-ratio: 1;
   height: auto;
   max-width: 100%;
   margin-inline: auto;
   flex-shrink: 0;
   overflow: visible;
-  /* inline-size only — size containment recortaba box-shadow */
   container-type: inline-size;
   container-name: icm-hub;
 }
@@ -574,30 +768,36 @@
   overflow: visible;
 }
 
-.icm-hub-branch--left .icm-hub-branch__asset {
+.icm-hub-branch__asset {
   display: block;
-  height: max(
-    0px,
-    calc(var(--icm-branch-left-height) - var(--icm-branch-shrink, 48px))
-  );
-  width: calc(
-    max(0px, calc(var(--icm-branch-left-height) - var(--icm-branch-shrink, 48px))) *
-      var(--icm-branch-intrinsic-w, 1651) / var(--icm-branch-intrinsic-h, 967)
-  );
-  max-width: none;
-  transform: translate(
-    calc(-1 * var(--icm-branch-anchor-x, 0.925) * 100%),
-    calc(
-      -1 * var(--icm-branch-anchor-y, 0.507) * 100% + var(--icm-branch-align-y, 0px)
-    )
-  );
-  transform-origin: 0 0;
   user-select: none;
   -webkit-user-drag: none;
 }
 
+/* Desktop: rama horizontal hacia grids laterales */
+@media (min-width: 1024px) {
+  .icm-hub-branch--left .icm-hub-branch__asset {
+    height: max(
+      0px,
+      calc(var(--icm-branch-left-height) - var(--icm-branch-shrink, 48px))
+    );
+    width: calc(
+      max(0px, calc(var(--icm-branch-left-height) - var(--icm-branch-shrink, 48px))) *
+        var(--icm-branch-intrinsic-w, 1651) / var(--icm-branch-intrinsic-h, 967)
+    );
+    max-width: none;
+    transform: translate(
+      calc(-1 * var(--icm-branch-anchor-x, 0.925) * 100%),
+      calc(
+        -1 * var(--icm-branch-anchor-y, 0.507) * 100% + var(--icm-branch-align-y, 0px)
+      )
+    );
+    transform-origin: 0 0;
+  }
+}
+
 .icm-central-hub__layer--background {
-  z-index: 1;
+  z-index: 0;
   inset: 0;
   left: 0;
   top: 0;
@@ -609,14 +809,19 @@
   justify-content: center;
   overflow: visible;
   background: transparent;
+  pointer-events: none;
 }
 
+/* Marco rosa (slide.svg) — capa más profunda, centrado en el círculo guía */
 .icm-orbital-bg {
-  width: min(100%, calc(100% - var(--icm-orbital-bg-shrink, 100px)));
-  height: min(100%, calc(100% - var(--icm-orbital-bg-shrink, 100px)));
-  aspect-ratio: 1;
-  max-width: calc(100% - var(--icm-orbital-bg-shrink, 100px));
-  max-height: calc(100% - var(--icm-orbital-bg-shrink, 100px));
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  width: 100%;
+  height: 100%;
+  max-width: 100%;
+  max-height: 100%;
+  margin: 0;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -627,6 +832,7 @@
 
 .icm-central-hub__layer--connections {
   z-index: 2;
+  pointer-events: none;
   inset: 0;
   left: 0;
   top: 0;
@@ -697,17 +903,17 @@
   align-items: center;
   justify-content: center;
   overflow: visible;
-  width: clamp(72px, 18.6cqw, 149px);
+  width: clamp(64px, calc(149px * var(--icm-fluid, 1)), 149px);
   max-width: 100%;
   aspect-ratio: 149 / 86;
   height: auto;
-  padding-block: clamp(4px, 5%, 6px);
-  padding-inline: clamp(4px, 3.5%, 6px);
+  padding-block: clamp(4px, calc(4px + (100vw - 1440px) * 2 / 480), 6px);
+  padding-inline: clamp(4px, calc(4px + (100vw - 1440px) * 2 / 480), 6px);
   gap: 0;
   border-radius: var(--icm-card-radius);
   border: 1px solid #25c1b5;
   background-color: #040217;
-  box-shadow: 0 0 40px rgba(37, 193, 181, 0.4);
+  box-shadow: 0 0 var(--icm-orbital-glow, 40px) rgba(37, 193, 181, 0.4);
 }
 
 .icm-orbital-node__card .icm-capability-card__body {
@@ -715,8 +921,8 @@
 }
 
 .icm-orbital-node__card[data-orbital-static] [data-card-icon] {
-  width: clamp(14px, 14.5cqi, 21px);
-  height: clamp(14px, 14.5cqi, 21px);
+  width: clamp(13.5px, calc(13.5px + (100vw - 1440px) * 7.5 / 480), 21px);
+  height: clamp(13.5px, calc(13.5px + (100vw - 1440px) * 7.5 / 480), 21px);
 }
 
 .icm-orbital-node__card[data-orbital-static] .icm-capability-card__label,
@@ -783,8 +989,8 @@
 
 .icm-orbital-node__card[data-label-density="compact"] [data-card-icon],
 .icm-orbital-node__card[data-label-density="dense"] [data-card-icon] {
-  width: clamp(13px, 13.5cqi, 19px);
-  height: clamp(13px, 13.5cqi, 19px);
+  width: var(--icm-card-icon-size-compact);
+  height: var(--icm-card-icon-size-compact);
 }
 
 .icm-orbital-node__halo {
@@ -801,15 +1007,16 @@
 
 .icm-central-core {
   position: relative;
-  z-index: 2;
+  z-index: 3;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  width: clamp(120px, 27.2cqw, 218px);
+  width: clamp(100px, calc(218px * var(--icm-fluid, 1)), 218px);
   aspect-ratio: 218 / 197;
   height: auto;
-  padding: clamp(12px, 2.4cqw, 18px) clamp(10px, 1.8cqw, 14px);
+  padding: clamp(8px, calc(18px * var(--icm-fluid, 1)), 18px)
+    clamp(8px, calc(14px * var(--icm-fluid, 1)), 14px);
   border-radius: var(--icm-card-radius);
   border: 1px solid #14163c;
   background-color: #040217;
@@ -848,23 +1055,30 @@
   margin: 0;
   padding: 0;
   text-align: center;
-  font-size: clamp(13px, 3cqw, 22px);
+  font-size: clamp(11px, calc(22px * var(--icm-fluid, 1)), 22px);
   line-height: 1.12;
   text-wrap: balance;
 }
 
 [data-grid-header-icon] {
-  width: clamp(48px, 4.17vw, 79.98px);
-  height: clamp(48px, 4.17vw, 79.98px);
+  width: clamp(40px, calc(79.98px * var(--icm-fluid, 1)), 79.98px);
+  height: clamp(40px, calc(79.98px * var(--icm-fluid, 1)), 79.98px);
   flex-shrink: 0;
 }
 
 [data-grid-title] {
-  font-size: clamp(13px, 1.25vw, 22px);
+  font-size: clamp(11px, calc(22px * var(--icm-fluid, 1)), 22px);
   font-weight: 500;
   line-height: 1.15;
   color: #fff;
   text-wrap: pretty;
+}
+
+/* Header izquierdo: el título debe ir en una sola línea */
+[data-side-grid="left"] [data-grid-title] {
+  white-space: nowrap;
+  text-wrap: nowrap;
+  word-break: keep-all;
 }
 
 .icm-side-grid-header__meta,
@@ -873,7 +1087,7 @@
   width: max-content;
   max-width: none;
   font-family: var(--font-inter), Inter, system-ui, sans-serif;
-  font-size: clamp(12px, 1.11vw, 21.33px);
+  font-size: clamp(10px, calc(21.33px * var(--icm-fluid, 1)), 21.33px);
   font-weight: 400;
   line-height: 1.2;
   color: #c3cbff;
@@ -886,18 +1100,20 @@
   height: clamp(22px, 1.93vw, 37px);
 }
 
-@media (max-width: 900px) {
+@media (max-width: 1023px) {
   [data-section="module-main"] {
     grid-template-columns: minmax(0, 1fr);
     grid-template-rows: none;
-    row-gap: clamp(20px, 5vw, 32px);
+    row-gap: clamp(26px, 5vw, 44px);
+    justify-items: stretch;
   }
 
   [data-side-grid] {
     display: flex;
     flex-direction: column;
-    gap: clamp(12px, 3vw, 16px);
+    gap: clamp(14px, 3.5vw, 22px);
     width: 100%;
+    align-items: flex-start;
   }
 
   [data-side-grid="left"] {
@@ -905,7 +1121,7 @@
   }
 
   [data-side-grid="right"] {
-    align-items: flex-end;
+    align-items: flex-start;
   }
 
   .icm-side-grid-header--left,
@@ -921,5 +1137,97 @@
 
   [data-side-grid="right"] [data-card-grid] {
     margin-left: 0;
+  }
+
+  /* Auto-layout con celdas iguales — sin saltos entre cards */
+  [data-side-grid] [data-card-grid] {
+    width: 100%;
+    max-width: 100%;
+    grid-template-columns: repeat(
+      auto-fill,
+      minmax(var(--icm-card-cell-w), var(--icm-card-cell-w))
+    );
+    grid-auto-rows: var(--icm-card-cell-h);
+    justify-content: start;
+  }
+
+  [data-side-grid] [data-capability-card] {
+    width: 100%;
+    height: 100%;
+    min-height: var(--icm-card-cell-h);
+    max-width: none;
+    aspect-ratio: unset;
+    padding: 12px;
+    box-sizing: border-box;
+  }
+
+  [data-side-grid] [data-capability-card][data-label-density="compact"],
+  [data-side-grid] [data-capability-card][data-label-density="dense"] {
+    padding: 12px;
+  }
+
+  [data-side-grid] [data-capability-card] [data-card-icon],
+  [data-side-grid] [data-capability-card][data-label-density="compact"] .icm-capability-card__icon,
+  [data-side-grid] [data-capability-card][data-label-density="dense"] .icm-capability-card__icon {
+    width: var(--icm-card-icon-size);
+    height: var(--icm-card-icon-size);
+  }
+
+  [data-grid-title] {
+    font-size: clamp(12px, 2.6vw, 18px);
+  }
+
+  .icm-side-grid-header__meta,
+  [data-grid-meta] {
+    font-size: clamp(10px, 2.1vw, 15px);
+  }
+
+  [data-grid-header-icon] {
+    width: clamp(40px, 6.5vw, 56px);
+    height: clamp(40px, 6.5vw, 56px);
+  }
+
+  /* Headers: icono + título + subtítulo alineados a la izquierda */
+  .icm-side-grid-header--left .icm-side-grid-header__copy,
+  .icm-side-grid-header--right .icm-side-grid-header__copy {
+    align-items: flex-start;
+    text-align: left;
+  }
+
+  .icm-side-grid-header--right .icm-side-grid-header__row {
+    justify-content: flex-start;
+    width: 100%;
+    margin-left: 0;
+  }
+
+  .icm-side-grid-header--right .icm-side-grid-header__icon {
+    order: -1;
+  }
+
+  [data-side-grid="left"] [data-grid-title] {
+    white-space: normal;
+    text-wrap: pretty;
+  }
+
+  /* Hub centrado en el eje visual — escala con --icm-fluid */
+  [data-section="module-main"] > .icm-central-zone {
+    width: 100%;
+    max-width: 100%;
+    justify-self: center;
+    align-self: center;
+    margin-inline: auto;
+  }
+
+  .icm-central-hub {
+    width: min(92vw, max(200px, var(--icm-hub-canvas)));
+  }
+
+  .icm-tab-bar__inner {
+    align-items: center;
+  }
+
+  .icm-tab-bar__divider {
+    align-self: center;
+    margin-bottom: 0;
   }
 }

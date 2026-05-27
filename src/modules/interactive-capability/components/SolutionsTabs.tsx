@@ -18,9 +18,16 @@ export function SolutionsTabs({
   onChange,
 }: SolutionsTabsProps) {
   return (
-    <section data-tab-control-group className="icm-tab-control-group">
-      <TabSectionLabel>{label}</TabSectionLabel>
-      <div className="icm-tab-chip-row" role="tablist" aria-label={label}>
+    <section
+      data-tab-control-group="solutions"
+      className="icm-tab-control-group icm-tab-control-group--solutions"
+    >
+      <TabSectionLabel anchorWord="for">{label}</TabSectionLabel>
+      <div
+        className="icm-tab-chip-row icm-tab-chip-row--grid"
+        role="tablist"
+        aria-label={label}
+      >
         {tabs.map((tab) => (
           <TabChip
             key={tab.id}

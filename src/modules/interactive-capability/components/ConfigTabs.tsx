@@ -13,7 +13,10 @@ export interface ConfigTabsProps {
 
 export function ConfigTabs({ label, tabs, activeId, onChange }: ConfigTabsProps) {
   return (
-    <section data-tab-control-group className="icm-tab-control-group">
+    <section
+      data-tab-control-group="config"
+      className="icm-tab-control-group icm-tab-control-group--config"
+    >
       <TabSectionLabel>{label}</TabSectionLabel>
       <div className="icm-tab-chip-row" role="tablist" aria-label={label}>
         {tabs.map((tab) => (

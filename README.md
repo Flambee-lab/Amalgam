@@ -52,7 +52,10 @@ activeWhen: ["caregivers:config-a", "patients:config-b", /* ... */],
 
 - Referencia de diseño: **1920px** (proporciones 480 : 837 : 480).
 - El módulo ocupa **100% del ancho** del contenedor hasta `max-width: 1920px`, sin scroll horizontal.
-- Por debajo de **1280px** las tres columnas se apilan verticalmente.
+- Entre **1920px** y **1440px** el contenido escala de forma fluida (labels de cajas: **15.5px → 10px**; iconos, gaps y padding en la misma proporción).
+- Por debajo de **1440px** se mantiene la escala de 1440 hasta el breakpoint **1280px** (pendiente).
+- Por debajo de **1024px** (`max-width: 1023px`): layout tablet vertical centrado; grids de cards con `auto-fill` (columnas según ancho).
+- Desde **1024px**: tres columnas fijas por grid lateral, alineadas al borde correspondiente.
 
 ## Desarrollo local
 

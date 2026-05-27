@@ -1,7 +1,8 @@
 "use client";
 
 import "../styles/module.css";
-import { useMemo } from "react";
+import { useMemo, type CSSProperties } from "react";
+import { useViewportScale } from "../hooks/useViewportScale";
 import { defaultModuleConfig } from "../config/module-data";
 import { useCapabilitySelection } from "../hooks/useCapabilitySelection";
 import type { InteractiveCapabilityModuleConfig } from "../types";
@@ -37,12 +38,14 @@ export function InteractiveCapabilityModule({
   }, [leftCardStates, rightCardStates]);
 
   const getState = (cardId: string) => stateById.get(cardId) ?? "inactive";
+  const fluidScale = useViewportScale();
 
   return (
     <ModuleScaleRoot className={className}>
       <div
         className="w-full min-w-0 bg-amalgam-canvas text-white"
         data-module="interactive-capability"
+        style={{ "--icm-fluid": fluidScale } as CSSProperties}
       >
         <ModuleTabBar
           solutionsLabel={config.labels.solutionsFor}

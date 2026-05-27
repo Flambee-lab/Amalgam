@@ -27,8 +27,12 @@ export { capabilityTokens } from "./config/tokens";
 export { FIGMA_CANVAS, canvasLayout } from "./config/canvas-layout";
 export {
   ICM_REFERENCE_WIDTH,
+  ICM_VIEWPORT_NARROW,
   ICM_FLUID_MIN,
   ICM_FLUID_MAX,
+  ICM_CARD_LABEL_SIZE_WIDE,
+  ICM_CARD_LABEL_SIZE_NARROW,
+  ICM_ORBITAL_LABEL_SIZE_WIDE,
   icmRatios,
 } from "./config/fluid-scale";
 export { defaultCentralHub, orbitalNodesConfig } from "./config/orbital-layout";
